@@ -1,2 +1,9 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ee]xt/
+[Ll]og/
+[Ll]ogs/
+
 # Direnv
 .direnv
