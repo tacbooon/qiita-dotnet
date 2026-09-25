@@ -1,4 +1,6 @@
-- name: Introduction
+- name: はじめに
   href: introduction.md
-- name: Getting Started
+- name: クイックスタート
   href: getting-started.md
+- name: 認証
+  href: authentication.md

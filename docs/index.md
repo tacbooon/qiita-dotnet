@@ -2,10 +2,11 @@
 _layout: landing
 ---
 
-# This is the **HOMEPAGE**.
+# QiitaDotNet
 
-Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
+Qiita API v2 用の .NET クライアントライブラリです。
 
-## Quick Start Notes:
-
-1. Add images to the *images* folder if the file is referencing an image.
+- [はじめに](articles/introduction.md)
+- [クイックスタート](articles/getting-started.md)
+- [認証](articles/authentication.md)
+- [API リファレンス](xref:QiitaDotNet)
