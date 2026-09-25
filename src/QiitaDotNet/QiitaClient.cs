@@ -26,7 +26,10 @@ public sealed class QiitaClient : IQiitaClient
     /// </remarks>
     /// <example>
     /// <code>
-    /// var handler = new QiitaAccessTokenHandler("&lt;access-token&gt;");
+    /// using QiitaDotNet;
+    /// using QiitaDotNet.Authentication;
+    ///
+    /// var handler = new QiitaAccessTokenHandler("&lt;access-token&gt;", new HttpClientHandler());
     /// var httpClient = new HttpClient(handler);
     /// var client = new QiitaClient(httpClient);
     /// </code>
