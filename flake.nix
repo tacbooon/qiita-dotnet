@@ -35,6 +35,10 @@
             DOTNET_CLI_TELEMETRY_OPTOUT = "1";
             DOTNET_NOLOGO = "true";
             DOTNET_ROOT = "${pkgs.dotnetCorePackages.sdk_10_0}/share/dotnet";
+
+            shellHook = ''
+              dotnet tool restore > /dev/null
+            '';
           };
         }
       );
