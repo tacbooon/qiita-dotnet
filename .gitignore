@@ -13,4 +13,5 @@ api/
 .direnv
 
 # Tests
+coverage/
 [Tt]est[Rr]esults/
