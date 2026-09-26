@@ -11,3 +11,6 @@ api/
 
 # Direnv
 .direnv
+
+# Tests
+[Tt]est[Rr]esults/
