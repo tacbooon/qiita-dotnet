@@ -1,4 +1,4 @@
-# AGENT.md
+# AGENTS.md
 
 This repository provides a .NET client library for Qiita API v2.
 
