@@ -7,13 +7,14 @@ This repository provides a .NET client library for Qiita API v2.
 - Language: C# 14
 - Target Framework: `net10.0`
 - Document: DocFX
-- Tests: TUnit (Planned)
-- External Dependencies: None
+- Tests: TUnit on Microsoft.Testing.Platform (MTP), not VSTest
+- Runtime Dependencies: None
 
 ## Commands
 
 - Setup: `dotnet tool restore`
 - Build: `dotnet build`
+- Test: `dotnet test`
 - Document Build: `dotnet docfx docs/docfx.json`
 
 ## Code Style
