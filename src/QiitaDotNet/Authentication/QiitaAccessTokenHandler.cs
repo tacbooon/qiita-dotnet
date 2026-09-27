@@ -70,18 +70,19 @@ public sealed class QiitaAccessTokenHandler : DelegatingHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var host = request.RequestUri?.Host;
-        if (string.IsNullOrEmpty(host) || (!AllowCustomHosts && !IsDefaultHost(host)))
+        var uri = request.RequestUri ?? throw new InvalidOperationException("Request URI is null.");
+
+        if (!AllowCustomHosts && !IsDefaultHost(uri.Host))
         {
             throw new InvalidOperationException(
-                $"Bearer token transmission to untrusted host is blocked: '{request.RequestUri}'." +
+                $"Bearer token transmission to untrusted host is blocked: '{uri}'." +
                 " Set AllowCustomHosts to true only to use custom endpoints for testing.");
         }
 
-        if (!AllowInsecureScheme && !IsSecureScheme(request.RequestUri?.Scheme))
+        if (!AllowInsecureScheme && !IsSecureScheme(uri.Scheme))
         {
             throw new InvalidOperationException(
-                $"Bearer token transmission requires HTTPS: '{request.RequestUri}'." +
+                $"Bearer token transmission requires HTTPS: '{uri}'." +
                 " Set AllowInsecureScheme to true only to use plaintext HTTP for testing.");
         }
 
@@ -89,10 +90,13 @@ public sealed class QiitaAccessTokenHandler : DelegatingHandler
         return base.SendAsync(request, cancellationToken);
     }
 
+    // ワイルドカード ("*.example.com") はサフィックス (".example.com") として照合する。
     private static bool IsDefaultHost(string host) =>
-        host.Equals("qiita.com", StringComparison.OrdinalIgnoreCase) ||
-        host.EndsWith(".qiita.com", StringComparison.OrdinalIgnoreCase);
+        DefaultTrustedHosts.Any(pattern =>
+            pattern.StartsWith("*.", StringComparison.Ordinal)
+                ? host.EndsWith(pattern[1..], StringComparison.OrdinalIgnoreCase)
+                : host.Equals(pattern, StringComparison.OrdinalIgnoreCase));
 
-    private static bool IsSecureScheme(string? scheme) =>
+    private static bool IsSecureScheme(string scheme) =>
         string.Equals(scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
 }
