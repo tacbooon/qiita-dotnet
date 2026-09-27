@@ -84,12 +84,9 @@ public sealed class QiitaApiException : HttpRequestException
                 var error = JsonSerializer.Deserialize(
                     body,
                     QiitaInternalJsonSerializerContext.Default.ErrorResponse);
-                if (error?.Message is not null && error.Type is not null)
-                {
-                    errorMessage = error.Message;
-                    errorType = error.Type;
-                }
-                else
+                errorMessage = error?.Message;
+                errorType = error?.Type;
+                if (errorMessage is null || errorType is null)
                 {
                     errorDetails = $"Invalid response body:\n{body.Truncate(MaxBodyPreviewLength)}";
                 }
