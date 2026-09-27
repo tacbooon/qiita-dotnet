@@ -13,8 +13,8 @@ This repository provides a .NET client library for Qiita API v2.
 ## Commands
 
 - Setup: `dotnet tool restore`
-- Build: `dotnet build`
-- Test: `dotnet test`
+- Build: `dotnet build --no-logo [-c <Debug|Release>] [/path/to/csproj]`
+- Test: `dotnet test [-c <Debug|Release>] /path/to/csproj`
 - Document Build: `dotnet docfx docs/docfx.json`
 
 ## Code Style
