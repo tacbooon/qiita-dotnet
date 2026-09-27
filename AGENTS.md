@@ -34,9 +34,7 @@ This repository provides a .NET client library for Qiita API v2.
 ## Sandbox
 
 - The agent runs on `anthropics/sandbox-runtime` when the environment variable `SANDBOX_RUNTIME` is set.
-- In the sandbox:
-  - File, network, and Unix-domain socket access may be denied.
-  - `docfx` is unavailable.
+- In the sandbox, file, and network access may be denied.
 - Report the exact blocked target to the user for approval when access is denied.
 
 ## REST API Specifications
