@@ -29,6 +29,7 @@ This repository provides a .NET client library for Qiita API v2.
 ## Workflows
 
 - Respond in Japanese.
+- Never run IntegrationTests as they need auth and consume rate limits. Ask the user to run them.
 - Do not commit or push unless asked.
 - Write commit messages in Japanese.
 
