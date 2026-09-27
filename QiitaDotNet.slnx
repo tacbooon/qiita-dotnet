@@ -3,6 +3,7 @@
     <Project Path="src/QiitaDotNet/QiitaDotNet.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/QiitaDotNet.IntegrationTests/QiitaDotNet.IntegrationTests.csproj" />
     <Project Path="tests/QiitaDotNet.UnitTests/QiitaDotNet.UnitTests.csproj" />
   </Folder>
 </Solution>
