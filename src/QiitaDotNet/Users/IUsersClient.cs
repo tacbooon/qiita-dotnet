@@ -24,4 +24,19 @@ public interface IUsersClient
         int? page = null,
         int? perPage = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 指定したユーザーを取得します (<c>GET /api/v2/users/:user_id</c>)。
+    /// </summary>
+    /// <param name="userId">ユーザー ID。</param>
+    /// <param name="cancellationToken">キャンセル用トークン。</param>
+    /// <returns>ユーザー。</returns>
+    /// <exception cref="ArgumentException"><paramref name="userId"/> が null、空文字、空白文字のみ、または <c>.</c>、<c>..</c>。</exception>
+    /// <exception cref="HttpRequestException">ネットワークエラー。</exception>
+    /// <exception cref="JsonException">成功レスポンスのボディが不正な JSON。</exception>
+    /// <exception cref="OperationCanceledException">キャンセルまたはタイムアウト。</exception>
+    /// <exception cref="QiitaApiException">エラーレスポンスを受信。</exception>
+    Task<User> GetUserAsync(
+        string userId,
+        CancellationToken cancellationToken = default);
 }

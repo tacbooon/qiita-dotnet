@@ -1,3 +1,4 @@
+using System.Text.Json;
 using QiitaDotNet.Models;
 using QiitaDotNet.Serialization;
 
@@ -43,5 +44,28 @@ internal sealed class UsersClient : IUsersClient
                     cancellationToken)
                 .ConfigureAwait(false)
             ?? [];
+    }
+
+    /// <inheritdoc />
+    public async Task<User> GetUserAsync(
+        string userId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userId);
+        if (userId is "." or "..")
+        {
+            throw new ArgumentException("userId must not be '.' or '..'.", nameof(userId));
+        }
+
+        var path = $"/users/{Uri.EscapeDataString(userId)}";
+        var user = await _transport
+                .GetJsonAsync(
+                    path,
+                    new QueryBuilder(),
+                    QiitaJsonSerializerContext.Default.User,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        return user ?? throw new JsonException("Response body was null.");
     }
 }
