@@ -1,3 +1,4 @@
+using System.Text.Json;
 using QiitaDotNet.UnitTests.TestData;
 
 namespace QiitaDotNet.UnitTests.Users;
@@ -131,6 +132,102 @@ public class UsersClientTests
         await Assert.That(async () => await client.Users.ListUsersAsync(null, perPage))
             .ThrowsExactly<ArgumentOutOfRangeException>()
             .WithParameterName("perPage");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    public async Task GetUserAsync_BuildsCorrectRequest()
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await client.Users.GetUserAsync("tacbooon");
+        using (Assert.Multiple())
+        {
+            await Assert.That(stub.LastRequest?.Method).IsEqualTo(HttpMethod.Get);
+            await Assert.That(stub.LastRequest?.RequestUri?.ToString())
+                .IsEqualTo("https://qiita.com/api/v2/users/tacbooon");
+        }
+    }
+
+    [Test]
+    [Arguments("a b", "a%20b", DisplayName = "space is escaped")]
+    [Arguments("a#b", "a%23b", DisplayName = "hash is escaped")]
+    [Arguments("a%b", "a%25b", DisplayName = "percent is escaped")]
+    [Arguments("a&b", "a%26b", DisplayName = "ampersand is escaped")]
+    [Arguments("a/b", "a%2Fb", DisplayName = "slash is escaped")]
+    [Arguments("a?b", "a%3Fb", DisplayName = "question mark is escaped")]
+    public async Task GetUserAsync_EscapesUserId(string userId, string escapedUserId)
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await client.Users.GetUserAsync(userId);
+        await Assert.That(stub.LastRequest?.RequestUri?.AbsoluteUri)
+            .IsEqualTo($"https://qiita.com/api/v2/users/{escapedUserId}");
+    }
+
+    [Test]
+    public async Task GetUserAsync_ResponseWithUser_ReturnsDeserializedUser()
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        var result = await client.Users.GetUserAsync("typical");
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id).IsEqualTo("typical");
+            await Assert.That(result.PermanentId).IsEqualTo(1);
+        }
+    }
+
+    [Test]
+    public async Task GetUserAsync_ResponseWithNull_ThrowsJsonException()
+    {
+        var stub = new StubHandler { ResponseBody = "null" };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Users.GetUserAsync("tacbooon"))
+            .ThrowsExactly<JsonException>();
+    }
+
+    [Test]
+    public async Task GetUserAsync_NullUserId_ThrowsArgumentNullExceptionWithoutSending()
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Users.GetUserAsync(null!))
+            .ThrowsExactly<ArgumentNullException>()
+            .WithParameterName("userId");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    [Arguments("", DisplayName = "empty")]
+    [Arguments("  ", DisplayName = "whitespace")]
+    public async Task GetUserAsync_EmptyOrWhiteSpaceUserId_ThrowsArgumentExceptionWithoutSending(string userId)
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Users.GetUserAsync(userId))
+            .ThrowsExactly<ArgumentException>()
+            .WithParameterName("userId");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    [Arguments(".", DisplayName = "single dot")]
+    [Arguments("..", DisplayName = "double dot")]
+    public async Task GetUserAsync_DotSegmentUserId_ThrowsArgumentExceptionWithoutSending(string userId)
+    {
+        var stub = new StubHandler { ResponseBody = UserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Users.GetUserAsync(userId))
+            .ThrowsExactly<ArgumentException>()
+            .WithParameterName("userId");
         await Assert.That(stub.LastRequest).IsNull();
     }
 }

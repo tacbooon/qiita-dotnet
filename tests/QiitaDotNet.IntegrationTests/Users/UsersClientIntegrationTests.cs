@@ -17,4 +17,15 @@ public class UsersClientIntegrationTests(QiitaHttpClientFixture fixture)
             await Assert.That(result[0].PermanentId).IsGreaterThan(0);
         }
     }
+
+    [Test]
+    public async Task GetUserAsync_ReturnsUser(CancellationToken ct)
+    {
+        var result = await fixture.Client.Users.GetUserAsync("tacbooon", cancellationToken: ct);
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id).IsEqualTo("tacbooon");
+            await Assert.That(result.PermanentId).IsEqualTo(277357);
+        }
+    }
 }
