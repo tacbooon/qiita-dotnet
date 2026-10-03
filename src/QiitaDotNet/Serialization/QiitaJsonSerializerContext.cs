@@ -12,6 +12,8 @@ namespace QiitaDotNet.Serialization;
     DefaultIgnoreCondition = JsonIgnoreCondition.Never)]
 [JsonSerializable(typeof(User))]
 [JsonSerializable(typeof(List<User>))]
+[JsonSerializable(typeof(Tag))]
+[JsonSerializable(typeof(List<Tag>))]
 public sealed partial class QiitaJsonSerializerContext : JsonSerializerContext
 {
 }

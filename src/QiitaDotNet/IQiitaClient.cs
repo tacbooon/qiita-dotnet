@@ -1,3 +1,4 @@
+using QiitaDotNet.Tags;
 using QiitaDotNet.Users;
 
 namespace QiitaDotNet;
@@ -7,6 +8,11 @@ namespace QiitaDotNet;
 /// </summary>
 public interface IQiitaClient
 {
+    /// <summary>
+    /// タグリソース (<c>GET /api/v2/tags</c> 系) を扱うサブクライアントを取得します。
+    /// </summary>
+    ITagsClient Tags { get; }
+
     /// <summary>
     /// ユーザーリソース (<c>GET /api/v2/users</c> 系) を扱うサブクライアントを取得します。
     /// </summary>
