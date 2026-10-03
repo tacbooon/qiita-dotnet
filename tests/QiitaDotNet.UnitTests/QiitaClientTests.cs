@@ -20,4 +20,12 @@ public class QiitaClientTests
         var client = new QiitaClient(httpClient);
         await Assert.That(client.Users).IsSameReferenceAs(client.Users);
     }
+
+    [Test]
+    public async Task Tags_ReturnsSameInstance()
+    {
+        using var httpClient = new HttpClient(new StubHandler());
+        var client = new QiitaClient(httpClient);
+        await Assert.That(client.Tags).IsSameReferenceAs(client.Tags);
+    }
 }
