@@ -230,4 +230,45 @@ public class UsersClientTests
             .WithParameterName("userId");
         await Assert.That(stub.LastRequest).IsNull();
     }
+
+    [Test]
+    public async Task GetAuthenticatedUserAsync_BuildsCorrectRequest()
+    {
+        var stub = new StubHandler { ResponseBody = AuthenticatedUserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await client.Users.GetAuthenticatedUserAsync();
+        using (Assert.Multiple())
+        {
+            await Assert.That(stub.LastRequest?.Method).IsEqualTo(HttpMethod.Get);
+            await Assert.That(stub.LastRequest?.RequestUri?.ToString())
+                .IsEqualTo("https://qiita.com/api/v2/authenticated_user");
+        }
+    }
+
+    [Test]
+    public async Task GetAuthenticatedUserAsync_ResponseWithUser_ReturnsDeserializedUser()
+    {
+        var stub = new StubHandler { ResponseBody = AuthenticatedUserJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        var result = await client.Users.GetAuthenticatedUserAsync();
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id).IsEqualTo("typical");
+            await Assert.That(result.PermanentId).IsEqualTo(1);
+            await Assert.That(result.ImageMonthlyUploadLimit).IsEqualTo(1048576);
+            await Assert.That(result.ImageMonthlyUploadRemaining).IsEqualTo(524288);
+        }
+    }
+
+    [Test]
+    public async Task GetAuthenticatedUserAsync_ResponseWithNull_ThrowsJsonException()
+    {
+        var stub = new StubHandler { ResponseBody = "null" };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Users.GetAuthenticatedUserAsync())
+            .ThrowsExactly<JsonException>();
+    }
 }

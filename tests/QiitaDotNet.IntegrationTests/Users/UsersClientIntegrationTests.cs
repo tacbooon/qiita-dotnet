@@ -1,3 +1,5 @@
+using TUnit.Core;
+
 namespace QiitaDotNet.IntegrationTests.Users;
 
 /// <summary>
@@ -26,6 +28,24 @@ public class UsersClientIntegrationTests(QiitaHttpClientFixture fixture)
         {
             await Assert.That(result.Id).IsEqualTo("tacbooon");
             await Assert.That(result.PermanentId).IsEqualTo(277357);
+        }
+    }
+
+    [Test]
+    public async Task GetAuthenticatedUserAsync_ReturnsAuthenticatedUser(CancellationToken ct)
+    {
+        Skip.When(
+            string.IsNullOrWhiteSpace(
+                Environment.GetEnvironmentVariable(QiitaHttpClientFixture.AccessTokenEnvironmentVariableName)),
+            $"Environment variable '{QiitaHttpClientFixture.AccessTokenEnvironmentVariableName}' is not set.");
+
+        var result = await fixture.Client.Users.GetAuthenticatedUserAsync(cancellationToken: ct);
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id).IsNotEmpty();
+            await Assert.That(result.PermanentId).IsGreaterThan(0);
+            await Assert.That(result.ImageMonthlyUploadLimit).IsGreaterThanOrEqualTo(0);
+            await Assert.That(result.ImageMonthlyUploadRemaining).IsGreaterThanOrEqualTo(0);
         }
     }
 }

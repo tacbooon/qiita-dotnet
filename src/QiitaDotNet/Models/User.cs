@@ -5,7 +5,7 @@ namespace QiitaDotNet.Models;
 /// <summary>
 /// Qiita ユーザーです。
 /// </summary>
-public sealed record User
+public record User
 {
     /// <summary>自己紹介文です。</summary>
     [JsonPropertyName("description")]
@@ -70,4 +70,10 @@ public sealed record User
     /// <summary>Web サイトの URL です。</summary>
     [JsonPropertyName("website_url")]
     public string? WebsiteUrl { get; init; }
+
+    /// <summary>
+    /// <see cref="User"/> を取得します。
+    /// </summary>
+    /// <returns>実行時型が <see cref="User"/> の場合は自分自身、それ以外の場合は新しい <see cref="User"/> インスタンス。</returns>
+    public User ToUser() => GetType() == typeof(User) ? this : new User(this);
 }
