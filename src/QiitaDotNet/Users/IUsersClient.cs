@@ -31,6 +31,9 @@ public interface IUsersClient
     /// <param name="userId">ユーザー ID。</param>
     /// <param name="cancellationToken">キャンセル用トークン。</param>
     /// <returns>ユーザー。</returns>
+    /// <remarks>
+    /// <para>ユーザー ID は大文字・小文字を区別せずに照合されます。戻り値の <see cref="User.Id"/> はサーバー側で正規化された表記となります。例えば、引数に <c>qiita</c> を指定しても <c>Qiita</c> が返る可能性があります。</para>
+    /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="userId"/> が null、空文字、空白文字のみ、または <c>.</c>、<c>..</c>。</exception>
     /// <exception cref="HttpRequestException">ネットワークエラー。</exception>
     /// <exception cref="JsonException">成功レスポンスのボディが不正な JSON。</exception>
