@@ -1,3 +1,4 @@
+using System.Text.Json;
 using QiitaDotNet.Tags;
 using QiitaDotNet.UnitTests.TestData;
 
@@ -161,6 +162,103 @@ public class TagsClientTests
         await Assert.That(async () => await client.Tags.ListTagsAsync(sort: (TagSort)999))
             .ThrowsExactly<ArgumentOutOfRangeException>()
             .WithParameterName("sort");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    public async Task GetTagAsync_BuildsCorrectRequest()
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await client.Tags.GetTagAsync("qiita");
+        using (Assert.Multiple())
+        {
+            await Assert.That(stub.LastRequest?.Method).IsEqualTo(HttpMethod.Get);
+            await Assert.That(stub.LastRequest?.RequestUri?.ToString())
+                .IsEqualTo("https://qiita.com/api/v2/tags/qiita");
+        }
+    }
+
+    [Test]
+    [Arguments("a b", "a%20b", DisplayName = "space is escaped")]
+    [Arguments("a#b", "a%23b", DisplayName = "hash is escaped")]
+    [Arguments("a%b", "a%25b", DisplayName = "percent is escaped")]
+    [Arguments("a&b", "a%26b", DisplayName = "ampersand is escaped")]
+    [Arguments("a/b", "a%2Fb", DisplayName = "slash is escaped")]
+    [Arguments("a?b", "a%3Fb", DisplayName = "question mark is escaped")]
+    public async Task GetTagAsync_EscapesTagId(string tagId, string escapedTagId)
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await client.Tags.GetTagAsync(tagId);
+        await Assert.That(stub.LastRequest?.RequestUri?.AbsoluteUri)
+            .IsEqualTo($"https://qiita.com/api/v2/tags/{escapedTagId}");
+    }
+
+    [Test]
+    public async Task GetTagAsync_ResponseWithTag_ReturnsDeserializedTag()
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        var result = await client.Tags.GetTagAsync("qiita");
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id).IsEqualTo("qiita");
+            await Assert.That(result.FollowersCount).IsEqualTo(100);
+            await Assert.That(result.ItemsCount).IsEqualTo(200);
+        }
+    }
+
+    [Test]
+    public async Task GetTagAsync_ResponseWithNull_ThrowsJsonException()
+    {
+        var stub = new StubHandler { ResponseBody = "null" };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Tags.GetTagAsync("qiita"))
+            .ThrowsExactly<JsonException>();
+    }
+
+    [Test]
+    public async Task GetTagAsync_NullTagId_ThrowsArgumentNullExceptionWithoutSending()
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Tags.GetTagAsync(null!))
+            .ThrowsExactly<ArgumentNullException>()
+            .WithParameterName("tagId");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    [Arguments("", DisplayName = "empty")]
+    [Arguments("  ", DisplayName = "whitespace")]
+    public async Task GetTagAsync_EmptyOrWhiteSpaceTagId_ThrowsArgumentExceptionWithoutSending(string tagId)
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Tags.GetTagAsync(tagId))
+            .ThrowsExactly<ArgumentException>()
+            .WithParameterName("tagId");
+        await Assert.That(stub.LastRequest).IsNull();
+    }
+
+    [Test]
+    [Arguments(".", DisplayName = "single dot")]
+    [Arguments("..", DisplayName = "double dot")]
+    public async Task GetTagAsync_DotSegmentTagId_ThrowsArgumentExceptionWithoutSending(string tagId)
+    {
+        var stub = new StubHandler { ResponseBody = TagJson.Typical };
+        using var httpClient = new HttpClient(stub);
+        var client = new QiitaClient(httpClient);
+        await Assert.That(async () => await client.Tags.GetTagAsync(tagId))
+            .ThrowsExactly<ArgumentException>()
+            .WithParameterName("tagId");
         await Assert.That(stub.LastRequest).IsNull();
     }
 }
