@@ -4,7 +4,7 @@ using QiitaDotNet.Models;
 namespace QiitaDotNet.Users;
 
 /// <summary>
-/// ユーザーリソース (<c>/api/v2/users</c>) 用サブクライアントインタフェースです。
+/// ユーザーリソース (<c>/api/v2/users</c>、<c>/api/v2/authenticated_user</c>) 用サブクライアントインタフェースです。
 /// </summary>
 public interface IUsersClient
 {
@@ -41,5 +41,20 @@ public interface IUsersClient
     /// <exception cref="QiitaApiException">エラーレスポンスを受信。</exception>
     Task<User> GetUserAsync(
         string userId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// アクセストークンに紐付く認証中のユーザーを取得します (<c>GET /api/v2/authenticated_user</c>)。
+    /// </summary>
+    /// <param name="cancellationToken">キャンセル用トークン。</param>
+    /// <returns>認証中のユーザー。</returns>
+    /// <remarks>
+    /// <para>このエンドポイントの呼び出しには認証が必要です。アクセストークンを設定していない場合は 401 エラー (<see cref="QiitaApiException"/>) となります。</para>
+    /// </remarks>
+    /// <exception cref="HttpRequestException">ネットワークエラー。</exception>
+    /// <exception cref="JsonException">成功レスポンスのボディが不正な JSON。</exception>
+    /// <exception cref="OperationCanceledException">キャンセルまたはタイムアウト。</exception>
+    /// <exception cref="QiitaApiException">エラーレスポンスを受信。</exception>
+    Task<AuthenticatedUser> GetAuthenticatedUserAsync(
         CancellationToken cancellationToken = default);
 }

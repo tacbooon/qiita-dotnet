@@ -68,4 +68,19 @@ internal sealed class UsersClient : IUsersClient
 
         return user ?? throw new JsonException("Response body was null.");
     }
+
+    /// <inheritdoc />
+    public async Task<AuthenticatedUser> GetAuthenticatedUserAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _transport
+                .GetJsonAsync(
+                    "/authenticated_user",
+                    new QueryBuilder(),
+                    QiitaJsonSerializerContext.Default.AuthenticatedUser,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        return user ?? throw new JsonException("Response body was null.");
+    }
 }

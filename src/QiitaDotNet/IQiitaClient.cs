@@ -14,7 +14,7 @@ public interface IQiitaClient
     ITagsClient Tags { get; }
 
     /// <summary>
-    /// ユーザーリソース (<c>GET /api/v2/users</c> 系) を扱うサブクライアントを取得します。
+    /// ユーザーリソース (<c>GET /api/v2/users</c> 系、<c>GET /api/v2/authenticated_user</c>) を扱うサブクライアントを取得します。
     /// </summary>
     IUsersClient Users { get; }
 }
