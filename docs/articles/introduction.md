@@ -19,6 +19,7 @@ QiitaDotNet は [Qiita API v2](https://qiita.com/api/v2/docs) を .NET から呼
 | サブクライアント                                          | メソッド                          | HTTP メソッド | エンドポイント                   |
 |-----------------------------------------------------------|-----------------------------------|---------------|----------------------------------|
 | @QiitaDotNet.Users.IUsersClient                           | `ListUsersAsync`                  | `GET`         | `/api/v2/users`                  |
+| @QiitaDotNet.Users.IUsersClient                           | `GetUserAsync`                    | `GET`         | `/api/v2/users/:user_id`         |
 
 ## ライセンス
 
