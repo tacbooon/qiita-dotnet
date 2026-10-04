@@ -46,4 +46,16 @@ public class TagsClientIntegrationTests(QiitaHttpClientFixture fixture)
             await Assert.That(result[0].Id).IsLessThan(result[1].Id);
         }
     }
+
+    [Test]
+    public async Task GetTagAsync_ReturnsTag(CancellationToken ct)
+    {
+        var result = await fixture.Client.Tags.GetTagAsync("qiita", cancellationToken: ct);
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Id.Equals("qiita", StringComparison.OrdinalIgnoreCase)).IsTrue();
+            await Assert.That(result.FollowersCount).IsGreaterThanOrEqualTo(0);
+            await Assert.That(result.ItemsCount).IsGreaterThanOrEqualTo(0);
+        }
+    }
 }

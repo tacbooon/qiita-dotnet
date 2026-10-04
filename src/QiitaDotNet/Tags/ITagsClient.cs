@@ -26,4 +26,22 @@ public interface ITagsClient
         int? perPage = null,
         TagSort? sort = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 指定したタグを取得します (<c>GET /api/v2/tags/:tag_id</c>)。
+    /// </summary>
+    /// <param name="tagId">タグ ID。</param>
+    /// <param name="cancellationToken">キャンセル用トークン。</param>
+    /// <returns>タグ。</returns>
+    /// <remarks>
+    /// <para>タグ ID は英大文字小文字を区別せずに照合されます。戻り値の <see cref="Tag.Id"/> はサーバー側で正規化された表記となります。例えば、引数に <c>qiita</c> を指定しても <c>Qiita</c> が返る可能性があります。</para>
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="tagId"/> が null、空文字、空白文字のみ、または <c>.</c>、<c>..</c>。</exception>
+    /// <exception cref="HttpRequestException">ネットワークエラー。</exception>
+    /// <exception cref="JsonException">成功レスポンスのボディが不正な JSON。</exception>
+    /// <exception cref="OperationCanceledException">キャンセルまたはタイムアウト。</exception>
+    /// <exception cref="QiitaApiException">エラーレスポンスを受信。</exception>
+    Task<Tag> GetTagAsync(
+        string tagId,
+        CancellationToken cancellationToken = default);
 }

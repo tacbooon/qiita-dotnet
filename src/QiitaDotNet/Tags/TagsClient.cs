@@ -1,3 +1,4 @@
+using System.Text.Json;
 using QiitaDotNet.Models;
 using QiitaDotNet.Serialization;
 
@@ -50,6 +51,29 @@ internal sealed class TagsClient : ITagsClient
                     cancellationToken)
                 .ConfigureAwait(false)
             ?? [];
+    }
+
+    /// <inheritdoc />
+    public async Task<Tag> GetTagAsync(
+        string tagId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
+        if (tagId is "." or "..")
+        {
+            throw new ArgumentException("tagId must not be '.' or '..'.", nameof(tagId));
+        }
+
+        var path = $"/tags/{Uri.EscapeDataString(tagId)}";
+        var tag = await _transport
+                .GetJsonAsync(
+                    path,
+                    new QueryBuilder(),
+                    QiitaJsonSerializerContext.Default.Tag,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        return tag ?? throw new JsonException("Response body was null.");
     }
 
     /// <summary>
