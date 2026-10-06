@@ -15,6 +15,11 @@ namespace QiitaDotNet.Serialization;
 [JsonSerializable(typeof(AuthenticatedUser))]
 [JsonSerializable(typeof(Tag))]
 [JsonSerializable(typeof(List<Tag>))]
+[JsonSerializable(typeof(Item))]
+[JsonSerializable(typeof(List<Item>))]
+[JsonSerializable(typeof(Group))]
+[JsonSerializable(typeof(Tagging))]
+[JsonSerializable(typeof(TeamMembershipSummary))]
 public sealed partial class QiitaJsonSerializerContext : JsonSerializerContext
 {
 }

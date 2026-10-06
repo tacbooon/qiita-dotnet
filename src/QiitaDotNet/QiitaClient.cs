@@ -1,3 +1,4 @@
+using QiitaDotNet.Items;
 using QiitaDotNet.Tags;
 using QiitaDotNet.Users;
 
@@ -9,8 +10,14 @@ namespace QiitaDotNet;
 public sealed class QiitaClient : IQiitaClient
 {
     private readonly ApiTransport _transport;
+    private readonly Lazy<IItemsClient> _items;
     private readonly Lazy<ITagsClient> _tags;
     private readonly Lazy<IUsersClient> _users;
+
+    /// <summary>
+    /// 記事リソース (<c>GET /api/v2/items</c> 系、<c>GET /api/v2/authenticated_user/items</c>) を扱うサブクライアントを取得します。
+    /// </summary>
+    public IItemsClient Items => _items.Value;
 
     /// <summary>
     /// タグリソース (<c>GET /api/v2/tags</c> 系) を扱うサブクライアントを取得します。
@@ -45,6 +52,9 @@ public sealed class QiitaClient : IQiitaClient
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         _transport = new ApiTransport(httpClient);
+        _items = new Lazy<IItemsClient>(
+            () => new ItemsClient(_transport),
+            LazyThreadSafetyMode.ExecutionAndPublication);
         _tags = new Lazy<ITagsClient>(
             () => new TagsClient(_transport),
             LazyThreadSafetyMode.ExecutionAndPublication);
