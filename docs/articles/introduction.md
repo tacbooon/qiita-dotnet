@@ -16,13 +16,14 @@ QiitaDotNet は [Qiita API v2](https://qiita.com/api/v2/docs) を .NET から呼
 
 現時点でサポートしているリクエストは以下の通りです。
 
-| サブクライアント                                          | メソッド                          | HTTP メソッド | エンドポイント                   |
-|-----------------------------------------------------------|-----------------------------------|---------------|----------------------------------|
-| @QiitaDotNet.Users.IUsersClient                           | `ListUsersAsync`                  | `GET`         | `/api/v2/users`                  |
-| @QiitaDotNet.Users.IUsersClient                           | `GetUserAsync`                    | `GET`         | `/api/v2/users/:user_id`         |
-| @QiitaDotNet.Users.IUsersClient                           | `GetAuthenticatedUserAsync`       | `GET`         | `/api/v2/authenticated_user`     |
-| @QiitaDotNet.Tags.ITagsClient                             | `ListTagsAsync`                   | `GET`         | `/api/v2/tags`                   |
-| @QiitaDotNet.Tags.ITagsClient                             | `GetTagAsync`                     | `GET`         | `/api/v2/tags/:tag_id`           |
+| サブクライアント                                          | メソッド                          | HTTP メソッド | エンドポイント                       |
+|-----------------------------------------------------------|-----------------------------------|---------------|--------------------------------------|
+| @QiitaDotNet.Users.IUsersClient                           | `ListUsersAsync`                  | `GET`         | `/api/v2/users`                      |
+| @QiitaDotNet.Users.IUsersClient                           | `GetUserAsync`                    | `GET`         | `/api/v2/users/:user_id`             |
+| @QiitaDotNet.Users.IUsersClient                           | `GetAuthenticatedUserAsync`       | `GET`         | `/api/v2/authenticated_user`         |
+| @QiitaDotNet.Items.IItemsClient                           | `ListAuthenticatedUserItemsAsync` | `GET`         | `/api/v2/authenticated_user/items`   |
+| @QiitaDotNet.Tags.ITagsClient                             | `ListTagsAsync`                   | `GET`         | `/api/v2/tags`                       |
+| @QiitaDotNet.Tags.ITagsClient                             | `GetTagAsync`                     | `GET`         | `/api/v2/tags/:tag_id`               |
 
 ## ライセンス
 

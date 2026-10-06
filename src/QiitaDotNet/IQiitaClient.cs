@@ -1,3 +1,4 @@
+using QiitaDotNet.Items;
 using QiitaDotNet.Tags;
 using QiitaDotNet.Users;
 
@@ -8,6 +9,11 @@ namespace QiitaDotNet;
 /// </summary>
 public interface IQiitaClient
 {
+    /// <summary>
+    /// 記事リソース (<c>GET /api/v2/items</c> 系、<c>GET /api/v2/authenticated_user/items</c>) を扱うサブクライアントを取得します。
+    /// </summary>
+    IItemsClient Items { get; }
+
     /// <summary>
     /// タグリソース (<c>GET /api/v2/tags</c> 系) を扱うサブクライアントを取得します。
     /// </summary>
